@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentasi Kelompok 3 - Aplikasi PDB Orde Dua</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+        }
+
+        /* Container slide */
+        .presentation-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Setiap slide */
+        .slide {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: none;
+            min-height: 80vh;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Judul slide */
+        .slide-title {
+            font-size: 1.8em;
+            color: #1a1a2e;
+            border-left: 5px solid #e94560;
+            padding-left: 20px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* Navigasi */
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: #e94560;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:hover {
+            background: #c62a47;
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            background: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Indikator slide */
+        .slide-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-family: monospace;
+            z-index: 1000;
+        }
+
+        /* Tabel */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .styled-table th {
+            background: #e94560;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .styled-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .styled-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        /* Kotak rumus */
+        .formula-box {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            border-left: 4px solid #e94560;
+            overflow-x: auto;
+        }
+
+        .rumus {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        /* List anggota */
+        .anggota-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .anggota-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 3px solid #e94560;
+            font-size: 14px;
+        }
+
+        /* Card */
+        .card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .card h4 {
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 20px;
+            }
+            .slide-title {
+                font-size: 1.3em;
+            }
+            .formula-box {
+                font-size: 0.85em;
+                padding: 10px;
+            }
+            .anggota-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+
+        /* Cover */
+        .cover {
+            text-align: center;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .cover h1 {
+            font-size: 2.2em;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+        }
+
+        .cover h2 {
+            font-size: 1.3em;
+            color: #e94560;
+            margin-bottom: 30px;
+        }
+
+        /* Footer slide */
+        .slide-footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* List styling */
+        ul, ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        /* Highlight */
+        .highlight {
+            background: #ffeaa7;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        /* Subjudul */
+        .subtitle {
+            font-size: 1.1em;
+            color: #e94560;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
+        }
+
+        /* Kode */
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- SLIDE 1: COVER -->
+        <div class="slide active" id="slide1">
+            <div class="cover">
+                <h1>📐 Aplikasi Persamaan Diferensial Orde Dua</h1>
+                <h2>Osilasi Massa Pegas & Rangkaian Listrik</h2>
+                <div style="background: #f0f4ff; padding: 15px; border-radius: 12px; margin: 20px auto; max-width: 300px;">
+                    <p><strong>Buku Ajar PDB</strong></p>
+                    <p>10 Mei 2026</p>
+                </div>
+                <div class="anggota-grid" style="margin-top: 20px;">
+                    <div class="anggota-item">Try Novian Karlinabila (240210101007)</div>
+                    <div class="anggota-item">Rika Dwi Agustin (240210101012)</div>
+                    <div class="anggota-item">Fiona Ambar Effendi (240210101018)</div>
+                    <div class="anggota-item">Naisyla Risma Egayanti (240210101042)</div>
+                    <div class="anggota-item">Soni Risky (240210101142)</div>
+                    <div class="anggota-item">Rian Adam (240210101148)</div>
+                    <div class="anggota-item">Bintang Afra Kirania (240210101155)</div>
+                    <div class="anggota-item">Rahma Aprilesa (240210101158)</div>
+                </div>
+                <p style="margin-top: 20px; color: #666;">Kelompok 3 - Universitas Jember</p>
+            </div>
+            <div class="slide-footer">Gunakan tombol ◀ ▶ atau panah keyboard untuk navigasi</div>
+        </div>
+
+        <!-- SLIDE 2: CAPAIAN PEMBELAJARAN -->
+        <div class="slide" id="slide2">
+            <div class="slide-title">🎯 Capaian Pembelajaran</div>
+            <div class="card">
+                <ul>
+                    <li>Mahasiswa mampu menerapkan berpikir logis, kritis, sistematis, dan inovatif dalam konteks PDB orde dua.</li>
+                    <li>Mahasiswa mampu menjelaskan aplikasi PDB orde dua pada:
+                        <ul style="margin-top: 8px;">
+                            <li>✓ Osilasi bebas tak teredam (massa pegas)</li>
+                            <li>✓ Osilasi bebas teredam (massa pegas + redaman)</li>
+                            <li>✓ Rangkaian listrik RLC seri</li>
+                        </ul>
+                    </li>
+                    <li>Mahasiswa mampu menentukan solusi eksak dan iteratif (MAPLE).</li>
+                </ul>
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 3: HUKUM NEWTON & HOOKE -->
+        <div class="slide" id="slide3">
+            <div class="slide-title">⚖️ Hukum Dasar (1)</div>
+            <div class="formula-box">
+                <strong>Hukum Newton II</strong><br>
+                ΣF = m × a = m × y''<br>
+                <span style="font-size: 12px;">"Jumlah gaya = massa × percepatan"</span>
+            </div>
+            <div class="formula-box">
+                <strong>Hukum Hooke (Pegas)</strong><br>
+                F_pegas = -k × y<br>
+                <span style="font-size: 12px;">"Gaya pegas sebanding dengan simpangan tetapi berlawanan arah"</span>
+            </div>
+            <p><strong>Keterangan:</strong> m (kg), y'' (m/s²), k (N/m), y (m)</p>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 4: HUKUM KIRCHHOFF -->
+        <div class="slide" id="slide4">
+            <div class="slide-title">🔌 Hukum Dasar (2)</div>
+            <div class="formula-box">
+                <strong>Hukum Kirchhoff (Tegangan)</strong><br>
+                ΣV = 0 &nbsp; atau &nbsp; RI + L·dI/dt + (1/C)∫I dt = E(t)
+            </div>
+            <div class="card">
+                <p><strong>Keterangan komponen:</strong></p>
+                <ul>
+                    <li><strong>RI</strong> = tegangan pada resistor</li>
+                    <li><strong>L dI/dt</strong> = tegangan pada induktor</li>
+                    <li><strong>(1/C)∫I dt</strong> = Q/C = tegangan pada kapasitor</li>
+                    <li><strong>E(t)</strong> = sumber tegangan</li>
+                </ul>
+                <div class="formula-box" style="margin-top: 12px;">
+                    I = dQ/dt &nbsp; (Kuat arus = laju perubahan muatan)
+                </div>
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 5: OSILASI TAK TEREDAM - KONSEP -->
+        <div class="slide" id="slide5">
+            <div class="slide-title">🌀 Osilasi Bebas Tak Teredam</div>
+            <div class="card">
+                <p><strong>Sistem: Massa + Pegas (tanpa redaman)</strong></p>
+                <ul>
+                    <li>Gaya pegas: <span class="rumus">-ky</span></li>
+                    <li>Tidak ada gaya redaman</li>
+                    <li>Tidak ada gaya luar</li>
+                </ul>
+                <div class="subtitle">Karakteristik:</div>
+                <ul>
+                    <li>Energi mekanik kekal</li>
+                    <li>Osilasi terus menerus</li>
+                    <li>Amplitudo tetap</li>
+                </ul>
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 6: PENURUNAN PD TAK TEREDAM -->
+        <div class="slide" id="slide6">
+            <div class="slide-title">📝 Penurunan PD Tak Teredam</div>
+            <div class="formula-box">
+                Langkah 1: ΣF = my''  →  -ky = my''
+            </div>
+            <div class="formula-box">
+                Langkah 2: my'' + ky = 0
+            </div>
+            <div class="formula-box">
+                Langkah 3: y'' + (k/m)y = 0
+            </div>
+            <div class="formula-box">
+                Misalkan ω₀² = k/m, maka:<br>
+                <span class="rumus">y'' + ω₀² y = 0</span>
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 7: SOLUSI UMUM TAK TEREDAM -->
+        <div class="slide" id="slide7">
+            <div class="slide-title">📐 Solusi Umum Tak Teredam</div>
+            <div class="formula-box">
+                Persamaan karakteristik: λ² + ω₀² = 0<br>
+                Akar: λ = ± i ω₀
+            </div>
+            <div class="formula-box">
+                <strong>Solusi umum:</strong><br>
+                y(t) = A cos(ω₀ t) + B sin(ω₀ t)
+            </div>
+            <div class="formula-box">
+                <strong>Bentuk alternatif:</strong><br>
+                y(t) = R cos(ω₀ t - φ)<br>
+                dengan R = √(A²+B²) = Amplitudo<br>
+                φ = arctan(B/A) = Sudut fase
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 8: CONTOH SOAL 1 -->
+        <div class="slide" id="slide8">
+            <div class="slide-title">📌 Contoh Soal 1: Tak Teredam</div>
+            <div class="card">
+                <p><strong>Soal:</strong> Bola besi berat W = 70 N meregangkan pegas 5 cm. Ditarik ke bawah 10 cm lalu dilepas (v₀=0). Tentukan y(t) dan frekuensi.</p>
+            </div>
+            <div class="formula-box">
+                <strong>Penyelesaian:</strong><br>
+                k = W/Δs = 70/0,05 = 1400 N/m<br>
+                m = W/g = 70/9,8 = 7,14 kg<br>
+                ω₀ = √(k/m) = √196 = 14 rad/s
+            </div>
+            <div class="formula-box">
+                y(t) = A cos 14t + B sin 14t<br>
+                y(0)=0,1 → A=0,1<br>
+                y'(0)=0 → B=0
+            </div>
+            <div class="formula-box">
+                <strong>Hasil:</strong> y(t) = 0,1 cos 14t<br>
+                f = ω₀/(2π) = 14/(2π) ≈ 2,23 Hz
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 9: OSILASI TEREDAM -->
+        <div class="slide" id="slide9">
+            <div class="slide-title">🌊 Osilasi Bebas Teredam</div>
+            <div class="card">
+                <p>Massa + Pegas + Peredam (c = konstanta redaman)</p>
+                <ul>
+                    <li>Gaya pegas: <span class="rumus">F₁ = -ky</span></li>
+                    <li>Gaya redaman: <span class="rumus">F₂ = -c y'</span></li>
+                </ul>
+                <div class="formula-box">
+                    Hukum Newton II:<br>
+                    -ky - c y' = m y''<br>
+                    <span class="rumus">m y'' + c y' + k y = 0</span>
+                </div>
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 10: TIGA KASUS REDAMAN -->
+        <div class="slide" id="slide10">
+            <div class="slide-title">📊 Tiga Kasus Redaman</div>
+            <table class="styled-table">
+                <thead><tr><th>Kasus</th><th>Syarat</th><th>Solusi</th></tr></thead>
+                <tbody>
+                    <tr><td>Overdamped</td><td>c² > 4mk</td><td>y = C₁e^{λ₁t} + C₂e^{λ₂t}</td></tr>
+                    <tr><td>Critically Damped</td><td>c² = 4mk</td><td>y = (C₁ + C₂t)e^{λt}</td></tr>
+                    <tr><td>Underdamped</td><td>c² < 4mk</td><td>y = e^{at}(C₁ cos bt + C₂ sin bt)</td></tr>
+                </tbody>
+            </table>
+            <div class="formula-box">
+                a = -c/(2m) &nbsp;&nbsp; b = √(4mk-c²)/(2m)
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 11: CONTOH SOAL 2 (TEREDAM KRITIS) -->
+        <div class="slide" id="slide11">
+            <div class="slide-title">📌 Contoh Soal 2: Teredam Kritis</div>
+            <div class="card">
+                <p><strong>Soal:</strong> Bola besi sama (W=70N, k=1400 N/m, m=7,14 kg) dengan redaman c=200. y(0)=0,1 , y'(0)=0. Tentukan y(t).</p>
+            </div>
+            <div class="formula-box">
+                PD: y'' + 28y' + 196y = 0<br>
+                λ² + 28λ + 196 = 0<br>
+                λ₁,₂ = -14 (akar kembar)
+            </div>
+            <div class="formula-box">
+                Solusi umum: y(t) = (C₁ + C₂t)e^{-14t}<br>
+                y(0)=0,1 → C₁ = 0,1<br>
+                y'(0)=0 → C₂ = 1,4
+            </div>
+            <div class="formula-box">
+                <strong>Hasil:</strong> y(t) = (0,1 + 1,4t)e^{-14t}
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 12: RANGKAIAN RLC -->
+        <div class="slide" id="slide12">
+            <div class="slide-title">🔋 Rangkaian RLC Seri</div>
+            <div class="card">
+                <ul>
+                    <li>Resistor (R): <span class="rumus">E_R = RI</span></li>
+                    <li>Induktor (L): <span class="rumus">E_L = L dI/dt</span></li>
+                    <li>Kapasitor (C): <span class="rumus">E_C = (1/C)Q</span></li>
+                </ul>
+            </div>
+            <div class="formula-box">
+                Hukum Kirchhoff:<br>
+                L·dI/dt + RI + (1/C)∫I dt = E(t)
+            </div>
+            <div class="formula-box">
+                Turunkan terhadap t:<br>
+                <span class="rumus">L I'' + R I' + (1/C) I = E'(t)</span>
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 13: CONTOH SOAL 3 (RLC) -->
+        <div class="slide" id="slide13">
+            <div class="slide-title">📌 Contoh Soal 3: RLC</div>
+            <div class="card">
+                <p><strong>Soal:</strong> R=100Ω, L=0,1H, C=1mF, tanpa sumber. I(0)=3mA, I'(0)=0. Tentukan I(t).</p>
+            </div>
+            <div class="formula-box">
+                PD: I'' + (R/L)I' + (1/(LC))I = 0<br>
+                I'' + 1000I' + 10000I = 0
+            </div>
+            <div class="formula-box">
+                λ² + 1000λ + 10000 = 0<br>
+                λ₁ ≈ -10,1 , λ₂ ≈ -989,9
+            </div>
+            <div class="formula-box">
+                I(t) = C₁e^{-10t} + C₂e^{-990t}<br>
+                I(0)=0,003 , I'(0)=0<br>
+                C₁ ≈ 0,00303 , C₂ ≈ -3,09×10^{-5}
+            </div>
+            <div class="formula-box">
+                <strong>Hasil:</strong> I(t) = 0,00303 e^{-10t} - 3,09×10^{-5} e^{-990t}
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 14: RINGKASAN KASUS -->
+        <div class="slide" id="slide14">
+            <div class="slide-title">📋 Ringkasan Kasus</div>
+            <table class="styled-table">
+                <thead><tr><th>Kasus</th><th>Syarat Mekanik</th><th>Syarat Listrik</th><th>Solusi</th></tr></thead>
+                <tbody>
+                    <tr><td>Tak teredam</td><td>c=0</td><td>R=0</td><td>A cos ωt + B sin ωt</td></tr>
+                    <tr><td>Teredam kurang</td><td>c²&lt;4mk</td><td>R²&lt;4L/C</td><td>e^{at}(C₁ cos ω_d t + C₂ sin ω_d t)</td></tr>
+                    <tr><td>Teredam kritis</td><td>c²=4mk</td><td>R²=4L/C</td><td>(C₁+C₂t)e^{at}</td></tr>
+                    <tr><td>Teredam lebih</td><td>c²&gt;4mk</td><td>R²&gt;4L/C</td><td>C₁e^{λ₁t}+C₂e^{λ₂t}</td></tr>
+                </tbody>
+            </table>
+            <div class="formula-box">
+                ω = √(k/m) atau ω = √(1/LC)<br>
+                a = -c/(2m) atau a = -R/(2L)
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 15: LANGKAH UMUM -->
+        <div class="slide" id="slide15">
+            <div class="slide-title">📝 Langkah Umum Penyelesaian</div>
+            <div class="card">
+                <ol>
+                    <li>Identifikasi sistem (pegas/redaman/rangkaian)</li>
+                    <li>Tulis hukum fisika yang relevan</li>
+                    <li>Bentuk persamaan diferensial orde 2 homogen</li>
+                    <li>Tentukan koefisien (k, m, c, R, L, C)</li>
+                    <li>Tulis persamaan karakteristik</li>
+                    <li>Cari akar-akar λ</li>
+                    <li>Tentukan kasus (tak teredam/teredam kurang/kritis/lebih)</li>
+                    <li>Tulis solusi umum sesuai kasus</li>
+                    <li>Terapkan syarat awal</li>
+                    <li>Interpretasi hasil</li>
+                </ol>
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 16: LATIHAN SOAL -->
+        <div class="slide" id="slide16">
+            <div class="slide-title">✏️ Latihan Soal</div>
+            <div class="card">
+                <ol>
+                    <li>Benda berat W=50 N meregangkan pegas 6 cm. Ditarik ke bawah 5 cm lalu dilepas. Tentukan y(t).</li>
+                    <li>m=1 kg, k=12 N/m, c=0. Pegas ditarik 1 m, dilepas ke atas dengan v=8 m/s. Tentukan amplitudo, frekuensi, periode.</li>
+                    <li>Bola besi berat 89 N meregangkan pegas 10 cm. Ditarik ke bawah 15 cm lalu dilepas. c=100 kg/det. Tentukan y(t).</li>
+                    <li>Rangkaian RLC dengan R=100Ω, L=0,1H, C=1mF, sumber E(t)=155 sin 377t. I(0)=0, I'(0)=0. Tentukan I(t).</li>
+                </ol>
+            </div>
+            <div class="slide-footer"></div>
+        </div>
+
+        <!-- SLIDE 17: DAFTAR PUSTAKA -->
+        <div class="slide" id="slide17">
+            <div class="slide-title">📚 Daftar Pustaka</div>
+            <div class="card">
+                <ul>
+                    <li>Boyce, W.E. & Diprima, R.C. (1997). Elementary Differential Equations and Boundary Value Problems. John Wiley & Sons.</li>
+                    <li>Kreyszig, E. (1993). Matematika Teknik Lanjutan. Gramedia Pustaka Utama.</li>
+                    <li>Dafik (1999). Persamaan Diferensial Biasa. Universitas Jember.</li>
+                    <li>Degeng, I.W. (2007). Kalkulus Lanjut Persamaan Diferensial dan Aplikasinya. Graha Ilmu.</li>
+                    <li>Schaums. Differential Equations. Schaums Outline Series.</li>
+                </ul>
+            </div>
+            <div class="slide-footer">Terima Kasih! - Kelompok 3</div>
+        </div>
+    </div>
+
+    <!-- Navigasi -->
+    <div class="slide-indicator" id="slideIndicator">Slide 1 / 17</div>
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn">◀</button>
+        <button class="nav-btn" id="nextBtn">▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 17;
+
+        function showSlide() {
+            // Sembunyikan semua slide
+            for (let i = 1; i <= totalSlides; i++) {
+                const slide = document.getElementById('slide' + i);
+                if (slide) slide.classList.remove('active');
+            }
+            
+            // Tampilkan slide aktif
+            const targetSlide = document.getElementById('slide' + currentSlide);
+            if (targetSlide) targetSlide.classList.add('active');
+            
+            // Update indikator
+            const indicator = document.getElementById('slideIndicator');
+            if (indicator) indicator.innerText = 'Slide ' + currentSlide + ' / ' + totalSlides;
+            
+            // Update tombol
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            if (prevBtn) prevBtn.disabled = (currentSlide === 1);
+            if (nextBtn) nextBtn.disabled = (currentSlide === totalSlides);
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 1 && newSlide <= totalSlides) {
+                currentSlide = newSlide;
+                showSlide();
+            }
+        }
+
+        // Event listener tombol
+        document.getElementById('prevBtn').addEventListener('click', function() { changeSlide(-1); });
+        document.getElementById('nextBtn').addEventListener('click', function() { changeSlide(1); });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            else if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Tampilkan slide pertama
+        showSlide();
+    </script>
+</body>
+</html>
