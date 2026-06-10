@@ -1,0 +1,1 @@
+# Aplikasi-Persamaan-Diferensial-Orde-Dua-Osilasi-Massa-Pegas-Rangkaian-Listrik
